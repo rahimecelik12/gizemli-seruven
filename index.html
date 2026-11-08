@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gizemli Serüven</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;padding:20px;min-height:100vh;
+ font-family:Arial,sans-serif;color:white;text-align:center;
+ background:linear-gradient(135deg,#07152e,#123c55,#07152e);
+ display:flex;justify-content:center;align-items:center
+}
+.kutu{
+ width:100%;max-width:650px;padding:28px;
+ background:#102944;border:2px solid #21d4c2;
+ border-radius:22px;box-shadow:0 0 25px #16cbbb55
+}
+h1{color:#43ead8}
+button{
+ border:0;border-radius:12px;padding:14px 18px;
+ margin:7px;background:#16b9ae;color:#06202b;
+ font-size:17px;font-weight:bold;cursor:pointer
+}
+button:hover{background:#65f5df}
+.secim{display:block;width:100%;background:#e8f4f7;color:#102944}
+#mesaj{min-height:35px;color:#69f5d8;font-weight:bold}
+#soru{font-size:21px;line-height:1.5}
+.bilgi{color:#a9f5ed;font-size:17px}
+</style>
+</head>
+<body>
+<div class="kutu">
+<h1>🔐 Gizemli Serüven</h1>
+<div id="icerik">
+<h2>Gizemli Odalara Hoş Geldin!</h2>
+<p>Bilgini kullan, soruları çöz, anahtarları topla!</p>
+<button onclick="baslat()">🚀 Oyuna Başla</button>
+</div>
+</div>
+
+<script>
+const odalar=[
+{
+ad:"💻 Dijital Dünya",
+sorular:[
+["Dijital ayak izi nedir?",["İnternette bıraktığımız izler","Bilgisayarın ağırlığı","Bir oyun türü"],0],
+["İnternet nedir?",["Bir bilgisayar oyunu","Dünya çapında ağ","Bir klavye"],1],
+["Güçlü şifre hangisidir?",["123456","abcdef","Mavi!27Kedi#"],2],
+["E-posta ne için kullanılır?",["Elektronik mesajlaşma","Resim çizme","Müzik dinleme"],0],
+["Web tarayıcısı hangisidir?",["Excel","Chrome","Paint"],1],
+["Bilgisayarın beyni hangisidir?",["Fare","Ekran","İşlemci"],2],
+["İnternette güvenli bilgi paylaşımı nasıl olur?",["Her şeyi paylaşarak","Kişisel bilgileri koruyarak","Şifreyi herkese vererek"],1],
+["Dosyaları saklamak için ne kullanılır?",["Depolama birimi","Hoparlör","Mikrofon"],0],
+["WWW ne anlama gelir?",["World Wide Web","Windows Web Work","Wide World Word"],0],
+["Aşağıdakilerden hangisi giriş birimidir?",["Monitör","Klavye","Yazıcı"],1]
+]
+},
+{
+ad:"🛡️ Siber Güvenlik",
+sorular:[
+["Şüpheli bağlantı gelirse ne yapmalıyız?",["Hemen tıklamalıyız","Herkese göndermeliyiz","Açmadan kontrol etmeliyiz"],2],
+["Kişisel veri hangisidir?",["T.C. kimlik numarası","Hava durumu","Genel haber"],0],
+["Virüslere karşı ne kullanılır?",["Hesap makinesi","Antivirüs programı","Müzik programı"],1],
+["Tanımadığımız kişilerden gelen dosyalar için ne yapmalıyız?",["Hemen açmalıyız","İndirmeliyiz","Güvenilirliğini kontrol etmeliyiz"],2],
+["İki aşamalı doğrulama ne sağlar?",["Ek güvenlik","Daha hızlı yazma","Ekran parlaklığı"],0],
+["Siber zorbalık nedir?",["Oyun oynamak","İnternette rahatsız edici davranış","Araştırma yapmak"],1],
+["Şifremizi kiminle paylaşmalıyız?",["Arkadaşımızla","Herkesle","Kimseyle"],2],
+["Güvenli internet sitesi genellikle hangi protokolü kullanır?",["HTTPS","FTP","HTTP olmayan bağlantı"],0],
+["Sahte e-posta nasıl adlandırılır?",["Sunum","Oltalama","Programlama"],1],
+["İnternette zorbalıkla karşılaşırsak ne yapmalıyız?",["Karşılık vermeliyiz","Gizlice paylaşmalıyız","Güvendiğimiz bir yetişkine bildirmeliyiz"],2]
+]
+},
+{
+ad:"🐍 Kodlama Laboratuvarı",
+sorular:[
+["Python'da ekrana yazı yazdıran komut hangisidir?",["print()","input()","int()"],0],
+["Python'da değişken oluşturmak için hangisi kullanılır?",["if","=","for"],1],
+["Döngü ne işe yarar?",["Bilgisayarı kapatır","Resim çizer","Komutları tekrarlar"],2],
+["Python'da metin veri türü hangisidir?",["str","int","float"],0],
+["5 + 3 işleminin sonucu kaçtır?",["6","8","9"],1],
+["Koşul kontrolü için hangi ifade kullanılır?",["print","input","if"],2],
+["Liste oluşturmak için hangi parantez kullanılır?",["[]","{}","()"],0],
+["Python'da kullanıcıdan veri almak için hangisi kullanılır?",["print()","input()","return"],1],
+["Algoritma nedir?",["Bilgisayar parçası","Oyun adı","Bir problemi çözmek için adımlar"],2],
+["Döngü türlerinden biri hangisidir?",["while","write","show"],0]
+]
+}
+];
+
+let aktifSorular=[],oda=0,sira=0,puan=0,anahtar=0;
+
+function karistir(dizi){
+ let a=[...dizi];
+ for(let i=a.length-1;i>0;i--){
+  let j=Math.floor(Math.random()*(i+1));
+  [a[i],a[j]]=[a[j],a[i]];
+ }
+ return a;
+}
+
+function baslat(){
+ puan=0;anahtar=0;oda=0;sira=0;
+ aktifSorular=odalar.map(o=>karistir(o.sorular).map(s=>{
+  let secenekler=karistir(s[1].map((metin,i)=>({metin,dogru:i===s[2]})));
+  return {soru:s[0],secenekler};
+ }));
+ soruGoster();
+}
+
+function soruGoster(){
+ let o=odalar[oda];
+ let s=aktifSorular[oda][sira];
+ document.getElementById("icerik").innerHTML=`
+ <h2>${o.ad}</h2>
+ <p class="bilgi">Oda: ${oda+1}/3 | Soru: ${sira+1}/10</p>
+ <p class="bilgi">⭐ Puan: ${puan} | 🗝️ Anahtar: ${anahtar}</p>
+ <h3 id="soru">${s.soru}</h3>
+ <div id="secenekler"></div>
+ <p id="mesaj"></p>`;
+ s.secenekler.forEach((sec,i)=>{
+  let b=document.createElement("button");
+  b.className="secim";
+  b.textContent=sec.metin;
+  b.onclick=()=>cevapla(i);
+  document.getElementById("secenekler").appendChild(b);
+ });
+}
+
+function cevapla(i){
+ let s=aktifSorular[oda][sira];
+ let dogru=s.secenekler[i].dogru;
+ document.querySelectorAll(".secim").forEach(b=>b.disabled=true);
+ if(dogru){
+  puan+=10;
+  document.getElementById("mesaj").textContent="✨ Harika! Doğru cevap. +10 puan!";
+ }else{
+  document.getElementById("mesaj").textContent="🔎 Bu kez olmadı. Doğru cevap: "+s.secenekler.find(x=>x.dogru).metin;
+ }
+ let b=document.createElement("button");
+ b.textContent="Sonraki ➜";
+ b.onclick=sonraki;
+ document.getElementById("secenekler").appendChild(b);
+}
+
+function sonraki(){
+ sira++;
+ if(sira>=10){
+  anahtar++;
+  if(oda<2){
+   oda++;sira=0;
+   odaMesaji();
+  }else{
+   sonuc();
+  }
+ }else{
+  soruGoster();
+ }
+}
+
+function odaMesaji(){
+ document.getElementById("icerik").innerHTML=`
+ <h2>🔓 Oda Tamamlandı!</h2>
+ <p>🗝️ Bir anahtar kazandın!</p>
+ <p>⭐ Puan: ${puan}</p>
+ <button onclick="soruGoster()">Yeni Odaya Geç</button>`;
+}
+
+function sonuc(){
+ document.getElementById("icerik").innerHTML=`
+ <h2>🏆 Serüven Tamamlandı!</h2>
+ <h3>⭐ Toplam Puan: ${puan}/300</h3>
+ <h3>🗝️ Toplanan Anahtar: ${anahtar}/3</h3>
+ <p>Harika bir macera tamamladın!</p>
+ <button onclick="baslat()">🔄 Yeniden Oyna</button>`;
+}
+</script>
+</body>
+</html>
